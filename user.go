@@ -37,7 +37,7 @@ func (user *User) Online() {
 	user.server.OnlineMap[user.Name] = user
 	user.server.mapLock.Unlock()
 
-	//	广播当前用户上线消息
+	// 广播当前用户上线消息
 	user.server.BroadCast(user, "已上线")
 }
 
@@ -52,9 +52,28 @@ func (user *User) Offline() {
 	user.server.BroadCast(user, "已下线")
 }
 
+// 给当前用户的客户端发消息
+func (user *User) SendMsg(msg string) {
+	_, err := user.conn.Write([]byte(msg))
+	if err != nil {
+		fmt.Println("user conn write err:", err)
+	}
+}
+
 // 用户处理消息的业务
 func (user *User) DoMessage(msg string) {
-	user.server.BroadCast(user, msg)
+	if msg == "who" {
+		// 查询当前在线用户有哪些
+		user.server.mapLock.Lock()
+		for _, user := range user.server.OnlineMap {
+			onlineMsg := "[" + user.Addr + "]" + user.Name + ":" + "在线...\n"
+			user.SendMsg(onlineMsg)
+		}
+		user.server.mapLock.Unlock()
+	} else {
+		user.server.BroadCast(user, msg)
+	}
+
 }
 
 // 监听当前user channel的方法，一旦channel有值，就直接发送给对应客户端

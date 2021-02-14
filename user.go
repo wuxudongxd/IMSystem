@@ -65,8 +65,8 @@ func (user *User) DoMessage(msg string) {
 	if msg == "who" {
 		// 查询当前在线用户有哪些
 		user.server.mapLock.Lock()
-		for _, user := range user.server.OnlineMap {
-			onlineMsg := "[" + user.Addr + "]" + user.Name + ":" + "在线...\n"
+		for _, onlineUser := range user.server.OnlineMap {
+			onlineMsg := "[" + onlineUser.Addr + "]" + onlineUser.Name + ":" + "在线...\n"
 			user.SendMsg(onlineMsg)
 		}
 		user.server.mapLock.Unlock()

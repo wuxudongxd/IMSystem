@@ -71,6 +71,7 @@ func (server *Server) Handler(conn net.Conn) {
 			}
 			if err != nil && err != io.EOF {
 				fmt.Println("conn Read err:", err)
+				return
 			}
 
 			// 提取用户的消息（去除"\n"）
@@ -99,7 +100,7 @@ func (server *Server) Handler(conn net.Conn) {
 			// 发送消息：强制踢除
 			user.SendMsg("你由于长时间未活跃，已被强制下线")
 			// 下线
-			user.Offline()
+			//user.Offline()
 			// 销毁用的资源
 			close(user.C)
 			// 关闭连接

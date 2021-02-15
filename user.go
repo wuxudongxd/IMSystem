@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net"
 	"strings"
 )
@@ -55,10 +54,7 @@ func (user *User) Offline() {
 
 // 给当前用户的客户端发消息
 func (user *User) SendMsg(msg string) {
-	_, err := user.conn.Write([]byte(msg))
-	if err != nil {
-		fmt.Println("user conn write err:", err)
-	}
+	user.conn.Write([]byte(msg))
 }
 
 // 用户处理消息的业务
@@ -98,9 +94,6 @@ func (user *User) DoMessage(msg string) {
 func (user *User) ListenMessage() {
 	for {
 		msg := <-user.C
-		_, err := user.conn.Write([]byte(msg + "\n"))
-		if err != nil {
-			fmt.Println("conn write err:", err)
-		}
+		user.conn.Write([]byte(msg + "\n"))
 	}
 }
